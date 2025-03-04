@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      
+  app:
+    build: .
+    command: bash -c "rails s -p 3000 -b '0.0.0.0'"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: quadro_vagas_rb_development
+    volumes:
+      - .:/home/app/web
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+     
+
+volumes:
+  postgres_data:
